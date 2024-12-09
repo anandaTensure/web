@@ -1,0 +1,95 @@
+#This is the development branch CI that will run and deploy the frontend to the S3 dev bucket
+
+name: Dev Frontend CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the staging branch
+  push:
+    branches: [ dev ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # strategy:
+    #  matrix:
+    #    node-version: [14.17.5]
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Use the node version specified in the strategy
+      #- name: Use Node.js ${{ matrix.node-version }}
+      #  uses: actions/setup-node@v2
+      #  with:
+      #    node-version: ${{ matrix.node-version }}
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      # Remove node_modules and package-lock.json to assure we're grabbing the latest every time
+      - name: Remove node_modules
+        run: rm -rf node_modules
+
+      - name: Remove package-lock.json
+        run: rm -rf package-lock.json
+
+
+      # Read node version from package.json
+      - name: Read Node.js version from package.json
+        id: node_version
+        run: |
+          echo "NODE_VERSION=$(cat package.json | jq -r '.engines.node')" >> $GITHUB_ENV
+
+      # Use Node.js version from package.json
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Install Yarn globally if not available
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      # Install packages using Yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      #Load env files
+      - name: Load .env file
+        env: 
+          DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
+        run: |
+          echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
+          export $(cat .env | xargs)
+
+      # Build an optimized production build
+      - name: Building app
+        run: |
+          unset CI
+          REACT_APP_API_URL=development yarn build
+
+      # Deploy to the S3 server
+      - name: Deploy to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_DEVELOPMENT_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: "build"
+
+      # Invalidate Cloudfront (this action)
+      - name: invalidate
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          DISTRIBUTION: ${{ secrets.DEV_DISTRIBUTION }}
+          PATHS: '/*'
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
