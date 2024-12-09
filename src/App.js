@@ -9,7 +9,7 @@ function App() {
         {process.env.direct}
         from env file
         {process.env.REACT_APP_FIREBASE_API_KEY}
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={logo} className="App-logo" alt="logo" /> 
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
