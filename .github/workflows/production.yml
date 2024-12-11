@@ -33,12 +33,14 @@ jobs:
           # Create .env file from the secret
           echo "${{ secrets.DEV_ENV_FILE_CONTENTS }}" > .env
 
-          # Loop through the .env file and export each key-value pair
           while IFS='=' read -r key value; do
-            # Export each key-value pair as an environment variable
-            echo "$key=$value" >> $GITHUB_ENV
-            export "$key=$value"
+            # Skip empty lines or lines starting with a comment
+            if [[ -z "$key" || "$key" =~ ^#.* ]]; then
+              continue
+            fi
+            export "$key=$value"  # Export the variable
           done < .env
+
 
       - name: Verify environment variables
         run: |
