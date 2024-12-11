@@ -41,5 +41,5 @@ jobs:
       # Confirm the environment variables are available
       - name: Verify environment variables
         run: |
-          echo "REACT_APP_API_URL is set to: $PAYPAL_CLIENT_ID_SANDBOX"
+          echo "API_URL is set to: $API_URL"
           env
