@@ -32,7 +32,9 @@ jobs:
         run: |
           echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
           cat .env
+          set -o allexport
           source .env
+          set +o allexport
 
 
       - name: Verify environment variables
