@@ -31,10 +31,12 @@ jobs:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
         run: |
           echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
+          cat .env
           # Export variables
           set -a
           source .env
           set +a
+          env
 
       # Confirm the environment variables are available
       - name: Verify environment variables
