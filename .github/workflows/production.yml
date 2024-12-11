@@ -30,16 +30,16 @@ jobs:
         env:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
         run: |
-          echo "${{ secrets.DEV_ENV_FILE_CONTENTS }}" | tr -d '\r' > test.txt
-          cat test.txt
-          # Export variables
-          set -a
-          source test.txt
-          set +a
-          env
+          # Create .env file from the secret
+          echo "${{ secrets.DEV_ENV_FILE_CONTENTS }}" > .env
 
-      # Confirm the environment variables are available
+          # Loop through the .env file and export each key-value pair
+          while IFS='=' read -r key value; do
+            # Export each key-value pair as an environment variable
+            echo "$key=$value" >> $GITHUB_ENV
+          done < .env
+
       - name: Verify environment variables
         run: |
-          echo "API_URL is set to: $API_URL"
-          env
+          echo "UI_URL is: $UI_URL"
+          echo "API_URL is: $API_URL"
