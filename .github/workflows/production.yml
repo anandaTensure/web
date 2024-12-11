@@ -37,6 +37,7 @@ jobs:
           while IFS='=' read -r key value; do
             # Export each key-value pair as an environment variable
             echo "$key=$value" >> $GITHUB_ENV
+            export "$key=$value"
           done < .env
 
       - name: Verify environment variables
