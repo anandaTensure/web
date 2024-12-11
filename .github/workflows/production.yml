@@ -43,3 +43,4 @@ jobs:
         run: |
           echo "UI_URL is: $UI_URL"
           echo "API_URL is: $API_URL"
+          env
