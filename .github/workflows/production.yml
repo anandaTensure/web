@@ -30,16 +30,8 @@ jobs:
         env:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
         run: |
-          # Create .env file from the secret
-          echo "${{ secrets.DEV_ENV_FILE_CONTENTS }}" > .env
-
-          while IFS='=' read -r key value; do
-            # Skip empty lines or lines starting with a comment
-            if [[ -z "$key" || "$key" =~ ^#.* ]]; then
-              continue
-            fi
-            export "$key=$value"  # Export the variable
-          done < .env
+          echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
+          export $(cat .env | xargs)
 
 
       - name: Verify environment variables
