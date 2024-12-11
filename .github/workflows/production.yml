@@ -30,11 +30,11 @@ jobs:
         env:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
         run: |
-          echo "${{ secrets.DEV_ENV_FILE_CONTENTS }}" | tr -d '\r' > .env
-          cat .env
+          echo "${{ secrets.DEV_ENV_FILE_CONTENTS }}" | tr -d '\r' > test.txt
+          cat test.txt
           # Export variables
           set -a
-          source .env
+          source test.txt
           set +a
           env
 
