@@ -31,7 +31,8 @@ jobs:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
         run: |
           echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
-          export $(cat .env | xargs)
+          cat .env
+          source .env
 
 
       - name: Verify environment variables
