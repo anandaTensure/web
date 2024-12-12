@@ -26,6 +26,9 @@ jobs:
       #  with:
       #    node-version: ${{ matrix.node-version }}
 
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
       - name: Load .env file
         env:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
