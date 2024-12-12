@@ -42,6 +42,7 @@ jobs:
       - name: Building app
         run: |
           unset CI
+          npm install
           REACT_APP_API_URL=development npm build
 
       - name: Verify environment variables
