@@ -33,6 +33,7 @@ jobs:
         env:
           DEV_ENV_FILE_CONTENTS: ${{ secrets.DEV_ENV_FILE_CONTENTS}}
         run: |
+          ls -la
           echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
           cat .env
           set -o allexport
