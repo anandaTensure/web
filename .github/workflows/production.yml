@@ -42,7 +42,7 @@ jobs:
       - name: Building app
         run: |
           unset CI
-          REACT_APP_API_URL=development yarn build
+          REACT_APP_API_URL=development npm build
 
       - name: Verify environment variables
         run: |
