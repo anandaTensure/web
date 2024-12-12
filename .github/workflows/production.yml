@@ -38,6 +38,11 @@ jobs:
           cat .env
           ls -la
 
+      # Build an optimized production build
+      - name: Building app
+        run: |
+          unset CI
+          REACT_APP_API_URL=development yarn build
 
       - name: Verify environment variables
         run: |
