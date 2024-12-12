@@ -39,6 +39,7 @@ jobs:
           set -o allexport
           source .env
           set +o allexport
+          ls -la
 
 
       - name: Verify environment variables
