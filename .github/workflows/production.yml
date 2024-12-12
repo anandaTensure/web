@@ -36,9 +36,6 @@ jobs:
           ls -la
           echo "${{ secrets.DEV_ENV_FILE_CONTENTS}}" > .env
           cat .env
-          set -o allexport
-          source .env
-          set +o allexport
           ls -la
 
 
